@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>바카라 2매 분석기</title>
+
+<style>
+
+body {
+  font-family: Arial;
+  padding: 20px;
+}
+
+button {
+  font-size: 25px;
+  margin: 5px;
+  padding: 15px 25px;
+}
+
+table {
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+td {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  border: 1px solid black;
+  font-weight: bold;
+}
+
+
+/* 출목 2줄 */
+.mainCell {
+  background-color: #EAEAEA;
+  font-size: 28px;
+}
+
+
+/* 3번째 / 4번째 줄 */
+.smallCell {
+  font-size: 18px;
+}
+
+
+/* 5번째 줄 */
+.predictCell {
+  background-color: #FFD8A8;
+  font-size: 28px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>바카라 2매 분석기</h2>
+
+<button onclick="add('1')">플 (1)</button>
+
+<button onclick="add('0')">뱅 (0)</button>
+
+<button onclick="addTie()">타이 +</button>
+
+<button onclick="removeTie()">타이 -</button>
+
+<button onclick="undo()">삭제</button>
+
+<button onclick="clearAll()">전체삭제</button>
+
+<h3 id="count"></h3>
+
+<div id="board"></div>
+
+<script>
+
+let data = [];
+
+let tieCount = 0;
+
+
+// 플 / 뱅 입력
+function add(value) {
+
+  data.push(value);
+
+  render();
+}
+
+
+// 타이 증가
+function addTie() {
+
+  tieCount++;
+
+  render();
+}
+
+
+// 타이 감소
+function removeTie() {
+
+  if (tieCount > 0) {
+
+    tieCount--;
+
+  }
+
+  render();
+}
+
+
+// 마지막 삭제
+function undo() {
+
+  data.pop();
+
+  render();
+}
+
+
+// 전체삭제
+function clearAll() {
+
+  data = [];
+
+  tieCount = 0;
+
+  render();
+}
+
+
+// 화면 출력
+function render() {
+
+  let html = "<table>";
+
+  let row1 = "<tr>";
+  let row2 = "<tr>";
+  let row3 = "<tr>";
+  let row4 = "<tr>";
+  let row5 = "<tr>";
+
+  let compareResults = [];
+  let compareResults2 = [];
+
+
+  // 2매 생성 + 3번째 줄 생성
+  for (let i = 0; i < data.length; i += 2) {
+
+    let first = data[i] || "";
+    let second = data[i + 1] || "";
+
+    row1 += "<td class='mainCell'>" + first + "</td>";
+
+    row2 += "<td class='mainCell'>" + second + "</td>";
+
+    let result = "";
+
+
+    // 3번째 줄
+    if (first !== "" && second !== "") {
+
+      if (first === second) {
+
+        result = "1";
+
+      } else {
+
+        result = "0";
+
+      }
+
+      compareResults.push(result);
+    }
+
+    row3 += "<td class='smallCell'>" + result + "</td>";
+  }
+
+
+  // 4번째 줄 생성
+  for (let i = 0; i < compareResults.length; i++) {
+
+    let result = "";
+
+    if (i >= 1) {
+
+      if (compareResults[i] === compareResults[i - 1]) {
+
+        result = "1";
+
+      } else {
+
+        result = "0";
+
+      }
+
+      compareResults2.push(result);
+    }
+
+    row4 += "<td class='smallCell'>" + result + "</td>";
+  }
+
+
+  // 5번째 줄 생성
+  // 3번째 열부터 시작
+
+  row5 += "<td></td>";
+  row5 += "<td></td>";
+
+  for (let i = 0; i < compareResults2.length; i++) {
+
+    row5 +=
+      "<td class='predictCell'>"
+      + compareResults2[i] +
+      "</td>";
+  }
+
+
+  row1 += "</tr>";
+  row2 += "</tr>";
+  row3 += "</tr>";
+  row4 += "</tr>";
+  row5 += "</tr>";
+
+
+  html += row1;
+  html += row2;
+  html += row3;
+  html += row4;
+  html += row5;
+
+  html += "</table>";
+
+  document.getElementById("board").innerHTML = html;
+
+
+  // 출목 정보 표시
+  document.getElementById("count").innerText =
+
+    "플/뱅 : " + data.length +
+
+    "   |   타이 : " + tieCount +
+
+    "   |   총 출목 : " + (data.length + tieCount);
+}
+
+</script>
+
+</body>
+
+</html>
