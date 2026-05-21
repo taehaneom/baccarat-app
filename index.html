@@ -2,8 +2,12 @@
 <html>
 
 <head>
+
 <meta charset="UTF-8">
+
 <title>바카라 2매 분석기</title>
+
+<link rel="manifest" href="manifest.json">
 
 <style>
 
@@ -206,7 +210,6 @@ function render() {
 
 
   // 5번째 줄 생성
-  // 3번째 열부터 시작
 
   row5 += "<td></td>";
   row5 += "<td></td>";
@@ -246,6 +249,14 @@ function render() {
     "   |   타이 : " + tieCount +
 
     "   |   총 출목 : " + (data.length + tieCount);
+}
+
+
+// PWA 등록
+if ("serviceWorker" in navigator) {
+
+  navigator.serviceWorker.register("service-worker.js");
+
 }
 
 </script>
