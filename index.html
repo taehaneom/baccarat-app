@@ -37,22 +37,38 @@ td {
 
 
 /* 출목 2줄 */
-.mainCell {
-  background-color: #EAEAEA;
+.playerCell {
+  background-color: #6D9DC5;
+  color: white;
   font-size: 28px;
+  font-weight: bold;
+}
+
+.bankerCell {
+  background-color: #D96C6C;
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 
-/* 3번째 / 4번째 줄 */
+/* 3번째 / 5번째 줄 */
 .smallCell {
   font-size: 18px;
 }
 
-
-/* 5번째 줄 */
+/* 4번째 줄 (예측줄) */
 .predictCell {
   background-color: #FFD8A8;
   font-size: 28px;
+  font-weight: bold;
+}
+
+/* 5번째 줄 (실제 결과) */
+.resultCell {
+  background-color: white;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 </style>
@@ -142,6 +158,7 @@ function render() {
 
   let html = "<table>";
 
+  let row0 = "<tr>";
   let row1 = "<tr>";
   let row2 = "<tr>";
   let row3 = "<tr>";
@@ -158,9 +175,19 @@ function render() {
     let first = data[i] || "";
     let second = data[i + 1] || "";
 
-    row1 += "<td class='mainCell'>" + first + "</td>";
+let class1 = "";
+if (first == "1") class1 = "playerCell";
+else if (first == "0") class1 = "bankerCell";
 
-    row2 += "<td class='mainCell'>" + second + "</td>";
+let class2 = "";
+if (second == "1") class2 = "playerCell";
+else if (second == "0") class2 = "bankerCell";
+
+row1 += "<td class='" + class1 + "'>" + first + "</td>";
+row2 += "<td class='" + class2 + "'>" + second + "</td>";
+
+    if(i===0){ row0 += "<td></td>"; }
+    row0 += "<td class='smallCell'>" + (i/2+1) + "</td>";
 
     let result = "";
 
@@ -205,9 +232,22 @@ function render() {
       compareResults2.push(result);
     }
 
-    row4 += "<td class='smallCell'>" + result + "</td>";
-  }
+let bg = "";
 
+if (i >= 4) {
+
+    let pos = (i - 4) % 6;
+
+    if (pos < 3) {
+        bg = " style='background:#E5E5E5'";
+    }
+
+}
+
+row4 += "<td class='resultCell'" + bg + ">" + result + "</td>";
+
+
+  }
 
   // 5번째 줄 생성
 
@@ -223,6 +263,7 @@ function render() {
   }
 
 
+  row0 += "</tr>";
   row1 += "</tr>";
   row2 += "</tr>";
   row3 += "</tr>";
@@ -230,11 +271,11 @@ function render() {
   row5 += "</tr>";
 
 
-  html += row1;
-  html += row2;
-  html += row3;
-  html += row4;
-  html += row5;
+html += row0;
+html += row1;
+html += row2;
+html += row5;   // 예측줄 먼저
+html += row4;   // 실제 결과 나중
 
   html += "</table>";
 
